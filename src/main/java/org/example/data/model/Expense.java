@@ -14,5 +14,6 @@ public class Expense {
     private String name;
     private String amount;
     //private Category category;
+    private String expenseTrackerAppId;
 
 }

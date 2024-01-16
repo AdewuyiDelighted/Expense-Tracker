@@ -1,10 +1,10 @@
 package org.example.data.repository;
 
 
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.example.data.model.ExpensesTrackerApp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ExpensesTrackerApp extends JpaRepository<ExpensesTrackerApp,Long> {
+public interface ExpensesTrackerAppRepository extends JpaRepository<ExpensesTrackerApp,Long> {
 
 
 }

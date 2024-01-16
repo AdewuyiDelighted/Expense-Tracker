@@ -1,2 +1,10 @@
-package org.example.dto.request;public class RegisterRequest {
+package org.example.dto.request;
+
+import lombok.Data;
+
+@Data
+public class RegisterRequest {
+    private String username;
+    private String password;
+    private String email;
 }
