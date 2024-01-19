@@ -4,6 +4,7 @@ import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.repository.ExpensesTrackerAppRepository;
 import org.example.dto.request.LoginRequest;
 import org.example.dto.request.RegisterRequest;
+import org.example.exception.InvalidDetailsException;
 import org.example.exception.InvalidEmailFormatException;
 import org.example.exception.UserAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,11 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
 
     @Override
     public void login(LoginRequest loginRequest) {
-
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-
-
+        ExpensesTrackerApp expensesTrackerApp = expensesTrackerAppRepository.findByEmail(loginRequest.getEmail());
+        if(!bCryptPasswordEncoder.matches(loginRequest.getPassword(), expensesTrackerApp.getPassword())) throw new InvalidDetailsException("Invalid details");
+        expensesTrackerApp.setLocked(false);
+        expensesTrackerAppRepository.save(expensesTrackerApp);
     }
 
     private static void bcrypt(RegisterRequest registerRequest) {

@@ -10,13 +10,14 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 @Entity
 public class Income {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     private String amount;
     @OneToOne
     private Category category;
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "expenses_Tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
 
 }
