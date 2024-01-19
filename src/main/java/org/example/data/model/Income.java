@@ -12,10 +12,10 @@ public class Income {
     @Id
     @GeneratedValue
     private Long id;
-    private String amount;
+    private double amount;
     @OneToOne
     private Category category;
-    private String name;
+//    private String name;
     @ManyToOne
     @JoinColumn(name = "expenses_Tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;

@@ -13,7 +13,7 @@ public class Expense {
     private String name;
     private String amount;
     @OneToOne
-   private Category category;
+    private Category category;
     @ManyToOne
     @JoinColumn(name = "expenses_tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
