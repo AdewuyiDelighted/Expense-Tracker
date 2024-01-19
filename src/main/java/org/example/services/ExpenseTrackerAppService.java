@@ -2,6 +2,7 @@ package org.example.services;
 
 import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.model.Income;
+import org.example.dto.request.AddExpenseRequest;
 import org.example.dto.request.AddIncomeRequest;
 import org.example.dto.request.LoginRequest;
 import org.example.dto.request.RegisterRequest;
@@ -18,6 +19,9 @@ public interface ExpenseTrackerAppService {
 
    void addIncome(AddIncomeRequest addIncomeRequest);
    double getBalance(String email);
+
+    void addExpenses(AddExpenseRequest addExpenseRequest);
 //void addIncome(Income income);
+
 
 }

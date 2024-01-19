@@ -18,18 +18,18 @@ public class IncomeServiceImpl implements IncomeService {
     private ExpenseTrackerAppService expenseTrackerAppService;
     @Autowired
     private CategoryService categoryService;
-//    @Autowired
-//    private ExpensesTrackerAppRepository expensesTrackerAppRepository;
+    @Autowired
+    private ExpensesTrackerAppRepository expensesTrackerAppRepository;
 
     @Override
     public Income addIncome(String incomeCategoryName,double amount,Long expenseTrackerId) {
-        Optional<ExpensesTrackerApp> expensesTrackerApp = expenseTrackerAppService.findById(expenseTrackerId);
+        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(expenseTrackerId);
         Income income = new Income();
         if(expensesTrackerApp.isPresent()) {
             income.setAmount(amount);
             income.setExpensesTrackerApp(expensesTrackerApp.get());
 //            Category category = categoryService.addCategory(incomeCategoryName,expenseTrackerId);
-//            income.setCategory(category);
+            income.setCategory(categoryService.addCategory(incomeCategoryName,expenseTrackerId));
             incomeRepository.save(income);
         }
         return income;

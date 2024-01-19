@@ -11,7 +11,7 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String amount;
+    private double amount;
     @OneToOne
     private Category category;
     @ManyToOne

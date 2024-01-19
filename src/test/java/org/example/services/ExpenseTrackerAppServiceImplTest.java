@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.example.data.model.Income;
 import org.example.data.repository.ExpensesTrackerAppRepository;
 import org.example.data.repository.IncomeRepository;
+import org.example.dto.request.AddExpenseRequest;
 import org.example.dto.request.AddIncomeRequest;
 import org.example.dto.request.LoginRequest;
 import org.example.dto.request.RegisterRequest;
@@ -104,9 +105,35 @@ class ExpenseTrackerAppServiceImplTest {
         expenseTrackerAppService.addIncome(addIncomeRequest);
         assertEquals(1,incomeRepository.count());
         assertEquals(4000,expenseTrackerAppService.getBalance("deborahdelighted5@gmail.com"));
-
-
     }
+    @Test
+    public void testThatUserCanRegisterAndLoginAndAddExpenseCheckBalance() {
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setPassword("Adewuyi@123");
+        registerRequest.setEmail("deborahdelighted5@gmail.com");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("deborahdelighted5@gmail.com");
+        loginRequest.setPassword("Adewuyi@123");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        addIncomeRequest.setAmount(4000);
+        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        assertEquals(4000,expenseTrackerAppService.getBalance("deborahdelighted5@gmail.com"));
+        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+        addExpenseRequest.setExpenseCategoryName("Salary");
+        addExpenseRequest.setAmount(2500);
+        addExpenseRequest.setEmail("deborahdelighted5@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest);
+        assertEquals(1,incomeRepository.count());
+        assertEquals(1500,expenseTrackerAppService.getBalance("deborahdelighted5@gmail.com"));
+    }
+
+
+
+
 
 
 }

@@ -1,11 +1,11 @@
 package org.example.dto.request;
 
+
 import lombok.Data;
 
 @Data
-public class AddIncomeRequest {
-    private String incomeCategoryName;
+public class AddExpenseRequest {
+    private String expenseCategoryName;
     private double amount;
     private String email;
-
 }
