@@ -1,5 +1,7 @@
 package org.example.services;
 
+import org.example.data.model.Budget;
+import org.example.data.model.Expense;
 import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.model.Income;
 import org.example.dto.request.AddExpenseRequest;
@@ -8,6 +10,8 @@ import org.example.dto.request.LoginRequest;
 import org.example.dto.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface ExpenseTrackerAppService {
@@ -21,7 +25,14 @@ public interface ExpenseTrackerAppService {
    double getBalance(String email);
 
     void addExpenses(AddExpenseRequest addExpenseRequest);
-//void addIncome(Income income);
+
+    List<Expense>findAllExpenseBelongingTo(String email);
+
+    List<Income> findAllIncomeBelongingTo(String mail);
+
+//    Budget setBudget(String email,String budgetAmount,String startYear,String startMonth,String startDay,String endYear,String endMonth,String endDate);
+//    findADayStatement(date);
+
 
 
 }

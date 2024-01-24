@@ -1,13 +1,19 @@
 package org.example.services;
 
 import org.example.data.model.Category;
+import org.example.data.model.CategoryType;
 import org.example.data.model.Expense;
 import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.repository.ExpenseRepository;
 import org.example.data.repository.ExpensesTrackerAppRepository;
+import org.example.exception.InvalidAmountException;
+import org.example.exception.InvalidDetailsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,13 +28,29 @@ public class ExpensesServiceImpl implements ExpenseService {
     @Override
     public Expense addExpenses(String categoryName, double amount, Long expenseTrackerId) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(expenseTrackerId);
-        Expense expense = new Expense();
-//        Category category = categoryService.addCategory(categoryName, expenseTrackerId);
-        expense.setExpensesTrackerApp(expensesTrackerApp.get());
-        expense.setAmount(amount);
-//        expense.setCategory(category);
-        expenseRepository.save(expense);
-        return expense;
-
+        if (expensesTrackerApp.isPresent()) {
+            if (amount > expensesTrackerApp.get().getBalance())
+                throw new InvalidAmountException("Enter a valid amount");
+            Expense expense = new Expense();
+            expense.setExpensesTrackerApp(expensesTrackerApp.get());
+            expense.setAmount(amount);
+            expense.setCategory(categoryService.addCategory(categoryName, expenseTrackerId, CategoryType.EXPENSE));
+            expense.setDateAdded(LocalDateTime.now());
+            expenseRepository.save(expense);
+            return expense;
+        }
+        throw new InvalidDetailsException("Detail Invalid");
     }
+
+    @Override
+    public List<Expense> getAllExpenseBelongingTo(Long expenseTrackerId) {
+        ArrayList<Expense> allUserExpense = new ArrayList<>();
+        for (Expense expense : expenseRepository.findAll()) {
+            if (expense.getExpensesTrackerApp().getId() == expenseTrackerId) {
+                allUserExpense.add(expense);
+            }
+        }
+        return allUserExpense;
+    }
+
 }

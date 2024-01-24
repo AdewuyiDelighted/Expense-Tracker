@@ -17,11 +17,11 @@ public class ExpensesTrackerApp {
     private String password;
     private String email;
     private double balance;
-    private LocalDateTime startDate = LocalDateTime.now();
-    private LocalDateTime endDate;
+//    private LocalDateTime startDate = LocalDateTime.now();
+//    private LocalDateTime endDate;
     @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL)
     private List<Income> userIncome = new ArrayList<>();
     @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL)
-    private List<Expense> expense = new ArrayList<>();
+    private List<Expense> userExpense = new ArrayList<>();
     private boolean isLocked;
 }

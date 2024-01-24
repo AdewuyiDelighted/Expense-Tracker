@@ -1,5 +1,7 @@
 package org.example.services;
 
+import jakarta.transaction.Transactional;
+import org.example.data.model.Budget;
 import org.example.data.model.Expense;
 import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.model.Income;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.example.utils.Mapper.map;
@@ -24,6 +28,7 @@ import static org.example.utils.Verification.passwordChecker;
 import static org.example.utils.Verification.validateEmail;
 
 @Service
+@Transactional
 public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     @Autowired
     private ExpensesTrackerAppRepository expensesTrackerAppRepository;
@@ -62,53 +67,66 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     public void addIncome(AddIncomeRequest addIncomeRequest) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(addIncomeRequest.getEmail());
         if (expensesTrackerApp.isPresent()) {
+
             ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
-            incomeService.addIncome(addIncomeRequest.getIncomeCategoryName(), addIncomeRequest.getAmount(), withoutOptionalExpenseTracker.getId());
-            for (Income income : incomeRepository.findAll()) {
-                if (income.getExpensesTrackerApp().getId().equals(withoutOptionalExpenseTracker.getId())) {
-                    withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() + income.getAmount());
-                    expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
-                }
-            }
+            Income income = incomeService.addIncome(addIncomeRequest.getIncomeCategoryName(), addIncomeRequest.getAmount(), withoutOptionalExpenseTracker.getId());
+            withoutOptionalExpenseTracker.getUserIncome().add(income);
+            withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() + withoutOptionalExpenseTracker.getUserIncome().getLast().getAmount());
+//            withoutOptionalExpenseTracker.setStartDate(LocalDateTime.now());
+            expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
         }
 
     }
+
 
     @Override
     public void addExpenses(AddExpenseRequest addExpenseRequest) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(addExpenseRequest.getEmail());
         if (expensesTrackerApp.isPresent()) {
             ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
-            expenseService.addExpenses(addExpenseRequest.getExpenseCategoryName(), addExpenseRequest.getAmount(), withoutOptionalExpenseTracker.getId());
-            for (Expense expense : expenseRepository.findAll()) {
-                if (expense.getExpensesTrackerApp().getId().equals(withoutOptionalExpenseTracker.getId())) {
-                    withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() - expense.getAmount());
-                    expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
-                }
-            }
-
+            Expense expense = expenseService.addExpenses(addExpenseRequest.getExpenseCategoryName(), addExpenseRequest.getAmount(), withoutOptionalExpenseTracker.getId());
+            withoutOptionalExpenseTracker.getUserExpense().add(expense);
+            withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() - expense.getAmount());
+            expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
         }
-
     }
 
+    @Override
+    public List<Expense> findAllExpenseBelongingTo(String email) {
+        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
+        if (expensesTrackerApp.isPresent()) {
+//            return expenseService.getAllExpenseBelongingTo(expensesTrackerApp.get().getId());
+            return expensesTrackerApp.get().getUserExpense();
+        }
+        throw new InvalidDetailsException("Detail Invalid");
+    }
+
+    @Override
+    public List<Income> findAllIncomeBelongingTo(String email) {
+        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
+        if (expensesTrackerApp.isPresent()) {
+//            return incomeService.getAllIncomeBelongingTo(expensesTrackerApp.get().getId());
+            return expensesTrackerApp.get().getUserIncome();
+        }
+        throw new InvalidDetailsException("Detail Invalid");
+    }
+
+//    @Override
+//    public Budget setBudget(String email, String budgetAmount, String startYear, String startMonth, String startDay, String endYear, String endMonth, String endDate) {
+//        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
+//        if(expensesTrackerApp.isPresent()){
+//            ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
+//            if(withoutOptionalExpenseTracker.getBalance())
+//        }
+//
+//    }
+//
 
     @Override
     public double getBalance(String email) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
         return expensesTrackerApp.get().getBalance();
     }
-
-
-//    @Override
-//    public void addIncome(Income income) {
-//        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(income.getExpensesTrackerApp().getId());
-//        if (expensesTrackerApp.isPresent()) {
-//            ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
-//            withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() + income.getAmount());
-//            expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
-//
-//        }
-//    }
 
 
     private boolean isRegistered(String email) {
