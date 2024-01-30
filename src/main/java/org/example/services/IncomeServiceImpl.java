@@ -7,6 +7,7 @@ import org.example.exception.InvalidAmountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class IncomeServiceImpl implements IncomeService {
         if(expensesTrackerApp.isPresent()) {
             income.setAmount(amount);
             income.setExpensesTrackerApp(expensesTrackerApp.get());
-            income.setDateAdded(LocalDateTime.now());
+            income.setDateAdded(LocalDate.of(2024,01,28));
             income.setCategory(categoryService.addCategory(incomeCategoryName,expenseTrackerId, CategoryType.INCOME));
             incomeRepository.save(income);
         }

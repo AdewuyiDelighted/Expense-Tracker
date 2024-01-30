@@ -11,7 +11,7 @@ public interface BudgetService {
     Budget findBudget(String email);
     List<Budget> findAllBudget(String email);
     double getBudgetBalance(String email);
-    String endBudget(String email);
+    Budget endBudget(String email);
     Budget resetBudget(ResetBudgetRequest request);
 
 

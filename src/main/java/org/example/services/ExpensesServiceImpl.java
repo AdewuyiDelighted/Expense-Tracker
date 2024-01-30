@@ -11,6 +11,7 @@ import org.example.exception.InvalidDetailsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ExpensesServiceImpl implements ExpenseService {
     @Autowired
     ExpenseRepository expenseRepository;
 
+
     @Override
     public Expense addExpenses(String categoryName, double amount, Long expenseTrackerId) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(expenseTrackerId);
@@ -35,7 +37,8 @@ public class ExpensesServiceImpl implements ExpenseService {
             expense.setExpensesTrackerApp(expensesTrackerApp.get());
             expense.setAmount(amount);
             expense.setCategory(categoryService.addCategory(categoryName, expenseTrackerId, CategoryType.EXPENSE));
-            expense.setDateAdded(LocalDateTime.now());
+            expense.setDateAdded(LocalDate.now());
+            System.out.println(expense.getDateAdded());
             expenseRepository.save(expense);
             return expense;
         }
@@ -44,9 +47,10 @@ public class ExpensesServiceImpl implements ExpenseService {
 
     @Override
     public List<Expense> getAllExpenseBelongingTo(Long expenseTrackerId) {
+        if(expensesTrackerAppRepository.findById(expenseTrackerId).isEmpty()) throw new InvalidDetailsException("Invalid detail");
         ArrayList<Expense> allUserExpense = new ArrayList<>();
         for (Expense expense : expenseRepository.findAll()) {
-            if (expense.getExpensesTrackerApp().getId() == expenseTrackerId) {
+            if (expense.getExpensesTrackerApp().getId().equals(expenseTrackerId)) {
                 allUserExpense.add(expense);
             }
         }

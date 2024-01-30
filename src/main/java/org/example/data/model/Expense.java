@@ -3,6 +3,7 @@ package org.example.data.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -12,7 +13,8 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dateAdded = LocalDateTime.now();
+    private
+    LocalDate dateAdded = LocalDate.now();
     private double amount;
     @OneToOne
     private Category category;

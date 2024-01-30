@@ -15,8 +15,8 @@ public class Budget {
     private Long id;
     private double budgetBalance;
     private double budgetAmount;
-    private LocalDateTime startDate = LocalDateTime.now();
-    private LocalDateTime endDate;
+    private LocalDate startDate = LocalDate.now();
+    private LocalDate endDate;
     private Long expenseAppTrackerId;
     private boolean isActive;
 }

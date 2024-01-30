@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -14,7 +15,7 @@ public class Income {
     @Id
     @GeneratedValue
     private Long id;
-    private LocalDateTime dateAdded = LocalDateTime.now();
+    private LocalDate dateAdded = LocalDate.now();
     private double amount;
     @OneToOne
     private Category category;

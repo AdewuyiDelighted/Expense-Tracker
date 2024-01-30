@@ -8,7 +8,6 @@ import org.example.utils.EndDate;
 import org.example.utils.StartDate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.example.utils.Verification.dateChecker;
@@ -19,9 +18,12 @@ import static org.example.utils.Verification.dateChecker;
 public class SetBudgetRequest {
     private String email;
     private double amount;
-    private LocalDateTime startDate = LocalDateTime.now();
-    private LocalDateTime endDate;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private LocalDate startDate = LocalDate.now();
+    private LocalDate endDate;
+
+
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
     public String getEmail() {
         return email;
     }
@@ -39,30 +41,30 @@ public class SetBudgetRequest {
         this.amount = amount;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
     public void setStartDate(StartDate startDate) {
-        String formattedStartDate = startDate.getDay() + "-" + startDate.getMonth() + "-" + startDate.getYear();
-        dateChecker(formattedStartDate);
-        if (LocalDateTime.parse(formattedStartDate, dateTimeFormatter).isBefore(LocalDateTime.now()))
+        String formattedStartDate = startDate.getYear() + "/" + startDate.getMonth() + "/" + startDate.getDay();
+//        dateChecker(formattedStartDate);
+        if (LocalDate.parse(formattedStartDate, dateTimeFormatter).isBefore(LocalDate.now()))
             throw new InvalidDateFormatException("Invalid date");
-        this.startDate = LocalDateTime.parse(formattedStartDate);
+        this.startDate = LocalDate.parse(formattedStartDate, dateTimeFormatter);
     }
 
 
-    public LocalDateTime getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
 
     }
 
     public void setEndDate(EndDate endDate) {
-        String formattedEndDate = endDate.getDate() + "-" + endDate.getMonth() + "-" + endDate.getYear();
-        dateChecker(formattedEndDate);
-        if (LocalDateTime.parse(formattedEndDate, dateTimeFormatter).isBefore(LocalDateTime.now()))
+        String formattedEndDate = endDate.getYear() + "/" + endDate.getMonth() + "/" + endDate.getDate();
+//        dateChecker(formattedEndDate);
+        if (LocalDate.parse(formattedEndDate, dateTimeFormatter).isBefore(LocalDate.now()))
             throw new InvalidDateFormatException("Invalid date");
-        this.endDate = LocalDateTime.parse(formattedEndDate, dateTimeFormatter);
+        this.endDate = LocalDate.parse(formattedEndDate, dateTimeFormatter);
     }
 
 
