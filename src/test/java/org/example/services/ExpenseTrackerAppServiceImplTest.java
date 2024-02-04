@@ -2,6 +2,7 @@ package org.example.services;
 
 import jakarta.transaction.Transactional;
 import org.example.data.model.Income;
+import org.example.data.repository.BudgetRepository;
 import org.example.data.repository.ExpenseRepository;
 import org.example.data.repository.ExpensesTrackerAppRepository;
 import org.example.data.repository.IncomeRepository;
@@ -21,8 +22,8 @@ import org.springframework.test.context.TestPropertySource;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:test.properties")
-@Transactional
+@TestPropertySource(locations = "/test.properties")
+//@Transactional
 class ExpenseTrackerAppServiceImplTest {
     @Autowired
     private ExpenseTrackerAppService expenseTrackerAppService;
@@ -32,12 +33,16 @@ class ExpenseTrackerAppServiceImplTest {
     IncomeRepository incomeRepository;
     @Autowired
     ExpenseRepository expenseRepository;
+    @Autowired
+    BudgetRepository budgetRepository;
 
     @BeforeEach
     public void startWith() {
         expensesTrackerAppRepository.deleteAll();
-//        incomeRepository.deleteAll();
-//        expenseRepository.deleteAll();
+        budgetRepository.deleteAll();
+
+        incomeRepository.deleteAll();
+        expenseRepository.deleteAll();
 
     }
 
@@ -50,7 +55,7 @@ class ExpenseTrackerAppServiceImplTest {
         assertEquals(1, expensesTrackerAppRepository.count());
     }
 
-    @Test
+    @ Test
     public void testThatTwoUserCantRegister() {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setPassword("Adewuyi@123");
@@ -259,61 +264,61 @@ class ExpenseTrackerAppServiceImplTest {
     public void testThatUserCanRegisterAndLoginAndIncomeAmountAndAddExpenseFindAllExpense() {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("deborahdelighted5@gmail.com");
+        registerRequest.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("deborahdelighted5@gmail.com");
+        loginRequest.setEmail("deborahdelighted51@gmail.com");
         loginRequest.setPassword("Adewuyi@123");
         expenseTrackerAppService.login(loginRequest);
         AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
         addIncomeRequest.setIncomeCategoryName("Family dues");
         addIncomeRequest.setAmount(8000);
-        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
+        addIncomeRequest.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addIncome(addIncomeRequest);
         AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
         addExpenseRequest.setExpenseCategoryName("food");
         addExpenseRequest.setAmount(1000);
-        addExpenseRequest.setEmail("deborahdelighted5@gmail.com");
+        addExpenseRequest.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest);
         AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
         addExpenseRequest1.setExpenseCategoryName("food");
         addExpenseRequest1.setAmount(4000);
-        addExpenseRequest1.setEmail("deborahdelighted5@gmail.com");
+        addExpenseRequest1.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest1);
         AddExpenseRequest addExpenseRequest2 = new AddExpenseRequest();
         addExpenseRequest2.setExpenseCategoryName("food");
         addExpenseRequest2.setAmount(3000);
-        addExpenseRequest2.setEmail("deborahdelighted5@gmail.com");
+        addExpenseRequest2.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest2);
-        assertEquals(3, expenseTrackerAppService.findAllExpenseBelongingTo("deborahdelighted5@gmail.com").size());
+        assertEquals(3, expenseTrackerAppService.findAllExpenseBelongingTo("deborahdelighted51@gmail.com").size());
     }
 
     @Test
     public void testThatUserCanRegisterAndLoginAndIncomeAmountAndFindAllIncome() {
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("deborahdelighted5@gmail.com");
+        registerRequest.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("deborahdelighted5@gmail.com");
+        loginRequest.setEmail("deborahdelighted51@gmail.com");
         loginRequest.setPassword("Adewuyi@123");
         expenseTrackerAppService.login(loginRequest);
         AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
         addIncomeRequest.setIncomeCategoryName("Family dues");
         addIncomeRequest.setAmount(8000);
-        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
+        addIncomeRequest.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addIncome(addIncomeRequest);
         AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
         addIncomeRequest1.setIncomeCategoryName("Family dues");
         addIncomeRequest1.setAmount(2000);
-        addIncomeRequest1.setEmail("deborahdelighted5@gmail.com");
+        addIncomeRequest1.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addIncome(addIncomeRequest1);
         AddIncomeRequest addIncomeRequest2 = new AddIncomeRequest();
         addIncomeRequest2.setIncomeCategoryName("Family dues");
         addIncomeRequest2.setAmount(2000);
-        addIncomeRequest2.setEmail("deborahdelighted5@gmail.com");
+        addIncomeRequest2.setEmail("deborahdelighted51@gmail.com");
         expenseTrackerAppService.addIncome(addIncomeRequest2);
-        assertEquals(3, expenseTrackerAppService.findAllIncomeBelongingTo("deborahdelighted5@gmail.com").size());
+        assertEquals(3, expenseTrackerAppService.findAllIncomeBelongingTo("deborahdelighted51@gmail.com").size());
     }
 
 

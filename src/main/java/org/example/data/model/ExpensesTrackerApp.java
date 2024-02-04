@@ -17,9 +17,10 @@ public class ExpensesTrackerApp {
     private String password;
     private String email;
     private double balance;
-    @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Income> userIncome = new ArrayList<>();
-    @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Expense> userExpense = new ArrayList<>();
+    private boolean activeBudget = false;
     private boolean isLocked;
 }

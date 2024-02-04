@@ -25,15 +25,15 @@ public class IncomeServiceImpl implements IncomeService {
     private ExpensesTrackerAppRepository expensesTrackerAppRepository;
 
     @Override
-    public Income addIncome(String incomeCategoryName,double amount,Long expenseTrackerId) {
-        if(amount <= 0 ) throw new InvalidAmountException("Enter a valid amount");
+    public Income addIncome(String incomeCategoryName, double amount, Long expenseTrackerId) {
+        if (amount <= 0) throw new InvalidAmountException("Enter a valid amount");
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(expenseTrackerId);
         Income income = new Income();
-        if(expensesTrackerApp.isPresent()) {
+        if (expensesTrackerApp.isPresent()) {
             income.setAmount(amount);
             income.setExpensesTrackerApp(expensesTrackerApp.get());
-            income.setDateAdded(LocalDate.of(2024,01,28));
-            income.setCategory(categoryService.addCategory(incomeCategoryName,expenseTrackerId, CategoryType.INCOME));
+            income.setDateAdded(LocalDate.now());
+            income.setCategory(categoryService.addCategory(incomeCategoryName, expenseTrackerId, CategoryType.INCOME));
             incomeRepository.save(income);
         }
         return income;
@@ -41,14 +41,14 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public List<Income> getAllIncomeBelongingTo(Long expenseTrackerId) {
-            ArrayList<Income> allUserIncome = new ArrayList<>();
-            for (Income income : incomeRepository.findAll()) {
-                if (income.getExpensesTrackerApp().getId() == expenseTrackerId) {
-                    allUserIncome.add(income);
-                }
+        ArrayList<Income> allUserIncome = new ArrayList<>();
+        for (Income income : incomeRepository.findAll()) {
+            if (income.getExpensesTrackerApp().getId() == expenseTrackerId) {
+                allUserIncome.add(income);
             }
-            return allUserIncome;
         }
-
+        return allUserIncome;
     }
+
+}
 

@@ -19,21 +19,22 @@ public interface ExpenseTrackerAppService {
     void register(RegisterRequest registerRequest);
 
     void login(LoginRequest loginRequest);
+
     Optional<ExpensesTrackerApp> findById(Long expenseTrackerId);
 
-   void addIncome(AddIncomeRequest addIncomeRequest);
-   double getBalance(String email);
+    void addIncome(AddIncomeRequest addIncomeRequest);
+
+    double getBalance(String email);
 
     void addExpenses(AddExpenseRequest addExpenseRequest);
 
-    List<Expense>findAllExpenseBelongingTo(String email);
+    List<Expense> findAllExpenseBelongingTo(String email);
 
     List<Income> findAllIncomeBelongingTo(String mail);
 
 
 //    Budget setBudget(String email,String budgetAmount,String startYear,String startMonth,String startDay,String endYear,String endMonth,String endDate);
 //    findADayStatement(date);
-
 
 
 }

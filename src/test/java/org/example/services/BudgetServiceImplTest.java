@@ -1,262 +1,361 @@
 package org.example.services;
 
-import org.example.data.model.Budget;
+
 import org.example.data.repository.BudgetRepository;
+import org.example.data.repository.CategoryRepository;
 import org.example.data.repository.ExpensesTrackerAppRepository;
 import org.example.dto.request.*;
-import org.example.utils.EndDate;
-import org.example.utils.StartDate;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
+import org.example.exception.InvalidBudgetAmountException;
+import org.example.exception.InvalidDateException;
+import org.example.exception.InvalidDateFormatException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.List;
+import java.time.LocalDate;
+
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@TestPropertySource(locations = "/test.properties")
+//@Transactional
 class BudgetServiceImplTest {
     @Autowired
     private BudgetService budgetService;
     @Autowired
-    private BudgetRepository budgetRepository;
-    @Autowired
     private ExpenseTrackerAppService expenseTrackerAppService;
     @Autowired
+    private BudgetRepository budgetRepository;
+    @Autowired
     private ExpensesTrackerAppRepository expensesTrackerAppRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @BeforeEach
-    public void startAllBefore() {
-        budgetRepository.deleteAll();
+    public void setUp() {
         expensesTrackerAppRepository.deleteAll();
+        budgetRepository.deleteAll();
+        categoryRepository.deleteAll();
     }
 
+
     @Test
-    public void testThatRegisterUserCanSetBudget() {
-        budgetRepository.deleteAll();
+    public void testThatUserCanRegisterLonginAndSetBudgetThatAParticularPeriodOfTime() {
         expensesTrackerAppRepository.deleteAll();
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        registerRequest.setEmail("delightedEmily@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
+        loginRequest.setEmail("delightedEmily@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
-        addIncomeRequest1.setIncomeCategoryName("Family dues");
-        addIncomeRequest1.setAmount(5000);
-        addIncomeRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest1);
-        AddIncomeRequest addIncomeRequest2 = new AddIncomeRequest();
-        addIncomeRequest2.setIncomeCategoryName("Family dues");
-        addIncomeRequest2.setAmount(1000);
-        addIncomeRequest2.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest2);
         AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
-        addIncomeRequest.setIncomeCategoryName("Family dues");
-        addIncomeRequest.setAmount(2000);
-        addIncomeRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        addIncomeRequest.setAmount(5000);
+        addIncomeRequest.setEmail("delightedEmily@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
         expenseTrackerAppService.addIncome(addIncomeRequest);
         AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
-        addExpenseRequest.setExpenseCategoryName("food");
-        addExpenseRequest.setAmount(1000);
-        addExpenseRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        addExpenseRequest.setEmail("delightedEmily@gmail.com");
+        addExpenseRequest.setAmount(2500);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
         expenseTrackerAppService.addExpenses(addExpenseRequest);
-        StartDate startDate = new StartDate();
-        startDate.setDay("31");
-        startDate.setMonth("01");
-        startDate.setYear("2024");
-        EndDate endDate = new EndDate();
-        endDate.setDate("31");
-        endDate.setMonth("01");
-        endDate.setYear("2024");
         SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
-        setBudgetRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        setBudgetRequest.setEmail("delightedEmily@gmail.com");
         setBudgetRequest.setAmount(2000);
-        setBudgetRequest.setStartDate(startDate);
-        setBudgetRequest.setEndDate(endDate);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        assertEquals(1, expensesTrackerAppRepository.count());
         assertNotNull(budgetService.setBudget(setBudgetRequest));
-        assertEquals(7000, expenseTrackerAppService.getBalance("EmilyddAdewuyi12@gmail.com"));
-
+        assertEquals(1, budgetRepository.count());
     }
 
     @Test
-    public void testThatRegisterUserCanSetBudgetAndGetBudgetBalance() {
-        budgetRepository.deleteAll();
+    public void testThatUserCanRegisterLoginAndSetBudgetThatAParticularPeriodOfTimeButCantInputInvlidDate() {
         expensesTrackerAppRepository.deleteAll();
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        registerRequest.setEmail("delightedEmily@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
+        loginRequest.setEmail("delightedEmily@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
-        addIncomeRequest1.setIncomeCategoryName("Pocket money");
-        addIncomeRequest1.setAmount(8000);
-        addIncomeRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest1);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(5000);
+        addIncomeRequest.setEmail("delightedEmily@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
         AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
-        addExpenseRequest.setExpenseCategoryName("Transport");
-        addExpenseRequest.setAmount(1000);
-        addExpenseRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        addExpenseRequest.setEmail("delightedEmily@gmail.com");
+        addExpenseRequest.setAmount(2500);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
         expenseTrackerAppService.addExpenses(addExpenseRequest);
-        StartDate startDate = new StartDate();
-        startDate.setDay("30");
-        startDate.setMonth("01");
-        startDate.setYear("2024");
-        EndDate endDate = new EndDate();
-        endDate.setDate("30");
-        endDate.setMonth("01");
-        endDate.setYear("2024");
         SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
-        setBudgetRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        setBudgetRequest.setEmail("delightedEmily@gmail.com");
         setBudgetRequest.setAmount(2000);
-        setBudgetRequest.setStartDate(startDate);
-        setBudgetRequest.setEndDate(endDate);
-        assertNotNull(budgetService.setBudget(setBudgetRequest));
+        setBudgetRequest.setStartDate(31);
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        assertThrows(InvalidDateFormatException.class, () -> budgetService.setBudget(setBudgetRequest));
+    }
+
+    @Test
+    public void testThatUserCanRegisterLoginAndSetBudgetThatAParticularPeriodOfTimeButCanInputDateThatIsNotBeforeTheCurrentDate() {
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedEmily@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedEmily@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(5000);
+        addIncomeRequest.setEmail("delightedEmily@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+        addExpenseRequest.setEmail("delightedEmily@gmail.com");
+        addExpenseRequest.setAmount(2500);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
+        expenseTrackerAppService.addExpenses(addExpenseRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedEmily@gmail.com");
+        setBudgetRequest.setAmount(2000);
+        setBudgetRequest.setStartDate(1);
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        assertThrows(InvalidDateException.class, () -> budgetService.setBudget(setBudgetRequest));
+    }
+
+    @Test
+    public void testThatUserCanRegisterLoginAndSetBudgetsFindARecentBudget() {
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedebby@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedebby@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(5000);
+        addIncomeRequest.setEmail("delightedebby@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+        addExpenseRequest.setEmail("delightedebby@gmail.com");
+        addExpenseRequest.setAmount(2500);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
+        expenseTrackerAppService.addExpenses(addExpenseRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedebby@gmail.com");
+        setBudgetRequest.setAmount(500);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
+        SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
+        setBudgetRequest1.setEmail("delightedebby@gmail.com");
+        setBudgetRequest1.setAmount(2500);
+        setBudgetRequest1.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest1.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest1.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest1.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest1.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest1.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest1);
+        assertEquals(2500, budgetService.findARecentBudget("delightedebby@gmail.com").getBudgetAmount());
+        assertEquals(LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth()), budgetService.findARecentBudget("delightedebby@gmail.com").getStartDate());
+    }
+
+    @Test
+    public void testThatUserCanRegisterLoginAndSetBudgetsFindAllBudget() {
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedebby@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedebby@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(5000);
+        addIncomeRequest.setEmail("delightedebby@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+        addExpenseRequest.setEmail("delightedebby@gmail.com");
+        addExpenseRequest.setAmount(500);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
+        expenseTrackerAppService.addExpenses(addExpenseRequest);
+        System.out.println(expenseTrackerAppService.getBalance("delightedebby@gmail.com"));
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedebby@gmail.com");
+        setBudgetRequest.setAmount(4000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
+        SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
+        setBudgetRequest1.setEmail("delightedebby@gmail.com");
+        setBudgetRequest1.setAmount(3000);
+        setBudgetRequest1.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest1.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest1.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest1.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest1.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest1.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest1);
+        SetBudgetRequest setBudgetRequest2 = new SetBudgetRequest();
+        setBudgetRequest2.setEmail("delightedebby@gmail.com");
+        setBudgetRequest2.setAmount(3000);
+        setBudgetRequest2.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest2.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest2.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest2.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest2.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest2.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest2);
+        assertEquals(3, budgetService.findAllBudgetBelongingTo("delightedebby@gmail.com").size());
+    }
+
+    @Test
+    public void testThatUserCanRegisterLoginAndSetBudgetsGetTheRecentBudgetBalance() {
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedebby@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedebby@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(15000);
+        addIncomeRequest.setEmail("delightedebby@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+        addExpenseRequest.setEmail("delightedebby@gmail.com");
+        addExpenseRequest.setAmount(1000);
+        addExpenseRequest.setExpenseCategoryName("House Rent");
+        expenseTrackerAppService.addExpenses(addExpenseRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedebby@gmail.com");
+        setBudgetRequest.setAmount(6000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
         AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
-        addExpenseRequest1.setExpenseCategoryName("rent");
-        addExpenseRequest1.setAmount(500);
-        addExpenseRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
+        addExpenseRequest1.setExpenseCategoryName("Ope food");
+        addExpenseRequest1.setAmount(2000);
+        addExpenseRequest1.setEmail("delightedebby@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest1);
         AddExpenseRequest addExpenseRequest2 = new AddExpenseRequest();
-        addExpenseRequest2.setExpenseCategoryName("cloth");
-        addExpenseRequest2.setAmount(1000);
-        addExpenseRequest2.setEmail("EmilyddAdewuyi12@gmail.com");
+        addExpenseRequest2.setExpenseCategoryName("Ope food");
+        addExpenseRequest2.setAmount(2000);
+        addExpenseRequest2.setEmail("delightedebby@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest2);
-        assertEquals(-500, budgetService.getBudgetBalance("EmilyddAdewuyi12@gmail.com"));
-        assertEquals(5500, expenseTrackerAppService.getBalance("EmilyddAdewuyi12@gmail.com"));
+        assertEquals(2000, budgetService.getBudgetBalance("delightedebby@gmail.com"));
     }
 
     @Test
-    public void testThatRegisterUserCanSetBudgetAndFindTheLastBudgetAccount() {
-        budgetRepository.deleteAll();
+    public void testThatUserCanRegisterLoginAndWhenUserWantInputAmountGreaterThanExpenseAppBalance() {
         expensesTrackerAppRepository.deleteAll();
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
+        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
-        addIncomeRequest1.setIncomeCategoryName("Pocket money");
-        addIncomeRequest1.setAmount(8000);
-        addIncomeRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest1);
-        StartDate startDate = new StartDate();
-        startDate.setDay("30");
-        startDate.setMonth("01");
-        startDate.setYear("2024");
-        EndDate endDate = new EndDate();
-        endDate.setDate("30");
-        endDate.setMonth("01");
-        endDate.setYear("2024");
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(10000);
+        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
         SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
-        setBudgetRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        setBudgetRequest.setAmount(2000);
-        setBudgetRequest.setStartDate(startDate);
-        setBudgetRequest.setEndDate(endDate);
-        budgetService.setBudget(setBudgetRequest);
-        Budget budget = budgetService.findBudget("EmilyddAdewuyi12@gmail.com");
-        assertEquals(2000, budget.getBudgetAmount());
-        assertEquals(8000, expenseTrackerAppService.getBalance("EmilyddAdewuyi12@gmail.com"));
+        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setAmount(12000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        assertThrows(InvalidBudgetAmountException.class, () -> budgetService.setBudget(setBudgetRequest));
     }
 
     @Test
-    public void testThatRegisterUserCanSetBudgetAndFindAllBudgetUserHad() {
-        budgetRepository.deleteAll();
+    public void testThatUserCanRegisterLoginAndWhenUserSetBudgetAndWouldGetNegativeBalanceAfterIfExpenseIsMore() {
         expensesTrackerAppRepository.deleteAll();
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("EmilyddAdewuyi12@gmail.com");
+        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
+        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
-        addIncomeRequest1.setIncomeCategoryName("Pocket money");
-        addIncomeRequest1.setAmount(8000);
-        addIncomeRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest1);
-        StartDate startDate1 = new StartDate();
-        startDate1.setDay("31");
-        startDate1.setMonth("01");
-        startDate1.setYear("2024");
-        EndDate endDate1 = new EndDate();
-        endDate1.setDate("31");
-        endDate1.setMonth("01");
-        endDate1.setYear("2024");
-        SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
-        setBudgetRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        setBudgetRequest1.setAmount(2000);
-        setBudgetRequest1.setStartDate(startDate1);
-        setBudgetRequest1.setEndDate(endDate1);
-        budgetService.setBudget(setBudgetRequest1);
-        List<Budget> userBudget = budgetService.findAllBudget("EmilyddAdewuyi12@gmail.com");
-        assertEquals(1, userBudget.size());
-        assertEquals(8000, expenseTrackerAppService.getBalance("EmilyddAdewuyi12@gmail.com"));
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(10000);
+        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setAmount(8000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
+        addExpenseRequest1.setExpenseCategoryName("Ope food");
+        addExpenseRequest1.setAmount(3000);
+        addExpenseRequest1.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest1);
+        AddExpenseRequest addExpenseRequest2 = new AddExpenseRequest();
+        addExpenseRequest2.setExpenseCategoryName("Ope food");
+        addExpenseRequest2.setAmount(5000);
+        addExpenseRequest2.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest2);
+        AddExpenseRequest addExpenseRequest3 = new AddExpenseRequest();
+        addExpenseRequest3.setExpenseCategoryName("Ope food");
+        addExpenseRequest3.setAmount(3500);
+        addExpenseRequest3.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest3);
+        assertEquals(-1500, expenseTrackerAppService.getBalance("delightedUs@gmail.com"));
     }
-
-    @Test
-    public void testThatRegisterUserCanSetBudgetAndEndAExistingBudget() {
-        budgetRepository.deleteAll();
-        expensesTrackerAppRepository.deleteAll();
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.register(registerRequest);
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("EmilyddAdewuyi12@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
-        expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest1 = new AddIncomeRequest();
-        addIncomeRequest1.setIncomeCategoryName("Pocket money");
-        addIncomeRequest1.setAmount(8000);
-        addIncomeRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest1);
-        StartDate startDate1 = new StartDate();
-        startDate1.setDay("30");
-        startDate1.setMonth("01");
-        startDate1.setYear("2024");
-        EndDate endDate1 = new EndDate();
-        endDate1.setDate("30");
-        endDate1.setMonth("01");
-        endDate1.setYear("2024");
-        SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
-        setBudgetRequest1.setEmail("EmilyddAdewuyi12@gmail.com");
-        setBudgetRequest1.setAmount(2000);
-        setBudgetRequest1.setStartDate(startDate1);
-        setBudgetRequest1.setEndDate(endDate1);
-        budgetService.setBudget(setBudgetRequest1);
-        budgetService.endBudget("EmilyddAdewuyi12@gmail.com");
-        StartDate startDate2 = new StartDate();
-        startDate2.setDay("30");
-        startDate2.setMonth("01");
-        startDate2.setYear("2024");
-        EndDate endDate2 = new EndDate();
-        endDate2.setDate("30");
-        endDate2.setMonth("01");
-        endDate2.setYear("2024");
-        SetBudgetRequest setBudgetRequest2 = new SetBudgetRequest();
-        setBudgetRequest2.setEmail("EmilyddAdewuyi12@gmail.com");
-        setBudgetRequest2.setAmount(2000);
-        setBudgetRequest2.setStartDate(startDate1);
-        setBudgetRequest2.setEndDate(endDate1);
-        assertTrue(budgetService.setBudget(setBudgetRequest2).isActive());
-        assertFalse(budgetService.endBudget("EmilyddAdewuyi12@gmail.com").isActive());
-        List<Budget> userBudget = budgetService.findAllBudget("EmilyddAdewuyi12@gmail.com");
-        assertEquals(2, userBudget.size());
-        assertEquals(8000, expenseTrackerAppService.getBalance("EmilyddAdewuyi12@gmail.com"));
-    }
-
-
 }

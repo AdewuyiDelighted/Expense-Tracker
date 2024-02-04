@@ -13,13 +13,13 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private
-    LocalDate dateAdded = LocalDate.now();
+    private LocalDate dateAdded = LocalDate.now();
     private double amount;
     @OneToOne
     private Category category;
     @ManyToOne
     @JoinColumn(name = "expenses_tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
+    private boolean budgetActive = false;
 
 }
