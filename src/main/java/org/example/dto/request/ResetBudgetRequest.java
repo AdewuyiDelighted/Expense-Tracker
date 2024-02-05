@@ -10,7 +10,10 @@ import java.time.LocalDate;
 @Data
 public class ResetBudgetRequest {
     private String email;
-    private EndDate newEndDate;
     private double newAmount;
+    private int newEndYear;
+    private int newEndMonth;
+    private int newEndDate;
+
 
 }

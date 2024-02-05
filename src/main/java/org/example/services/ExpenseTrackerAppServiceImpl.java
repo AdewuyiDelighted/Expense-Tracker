@@ -72,7 +72,6 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
             Income income = incomeService.addIncome(addIncomeRequest.getIncomeCategoryName(), addIncomeRequest.getAmount(), withoutOptionalExpenseTracker.getId());
             withoutOptionalExpenseTracker.getUserIncome().add(income);
             withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() + withoutOptionalExpenseTracker.getUserIncome().getLast().getAmount());
-//            withoutOptionalExpenseTracker.setStartDate(LocalDateTime.now());
             expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
         }
 
@@ -95,7 +94,6 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     public List<Expense> findAllExpenseBelongingTo(String email) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
         if (expensesTrackerApp.isPresent()) {
-//            return expenseService.getAllExpenseBelongingTo(expensesTrackerApp.get().getId());
             return expensesTrackerApp.get().getUserExpense();
         }
         throw new InvalidDetailsException("Detail Invalid");
@@ -105,22 +103,11 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     public List<Income> findAllIncomeBelongingTo(String email) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
         if (expensesTrackerApp.isPresent()) {
-//            return incomeService.getAllIncomeBelongingTo(expensesTrackerApp.get().getId());
             return expensesTrackerApp.get().getUserIncome();
         }
         throw new InvalidDetailsException("Detail Invalid");
     }
 
-//    @Override
-//    public Budget setBudget(String email, String budgetAmount, String startYear, String startMonth, String startDay, String endYear, String endMonth, String endDate) {
-//        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
-//        if(expensesTrackerApp.isPresent()){
-//            ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
-//            if(withoutOptionalExpenseTracker.getBalance())
-//        }
-//
-//    }
-//
 
     @Override
     public double getBalance(String email) {

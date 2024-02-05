@@ -1,22 +1,19 @@
 package org.example.services;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.data.model.Budget;
 import org.example.data.model.Expense;
 import org.example.data.model.ExpensesTrackerApp;
 import org.example.data.repository.BudgetRepository;
-import org.example.data.repository.ExpenseRepository;
 import org.example.data.repository.ExpensesTrackerAppRepository;
+import org.example.dto.request.ResetBudgetRequest;
 import org.example.dto.request.SetBudgetRequest;
-import org.example.exception.InvalidAmountException;
-import org.example.exception.InvalidBudgetAmountException;
+import org.example.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,28 +38,31 @@ public class BudgetServiceImpl implements BudgetService {
         if (expensesTrackerApp.isPresent()) {
             validateAmount(setBudgetRequest, expensesTrackerApp);
             Budget budget = map(setBudgetRequest, expensesTrackerApp.get());
-            expensesTrackerApp.get().setActiveBudget(true);
-            expensesTrackerAppRepository.save(expensesTrackerApp.get());
-            budgetRepository.save(budget);
-            return budget;
+            if (!validateLastBudgetStatus(setBudgetRequest.getEmail(), budget)) {
+                expensesTrackerApp.get().setActiveBudget(true);
+                expensesTrackerAppRepository.save(expensesTrackerApp.get());
+                budgetRepository.save(budget);
+                return budget;
+            }
         }
-        return null;
+        throw new InvalidDetailsException("Enter a valid details !!!!!!!!");
     }
 
 
     private static void validateAmount(SetBudgetRequest setBudgetRequest, Optional<ExpensesTrackerApp> expensesTrackerApp) {
-        if (setBudgetRequest.getAmount() <= 0 || setBudgetRequest.getAmount() > expensesTrackerApp.get().getBalance())
+        if (setBudgetRequest.getAmount() <= 0) throw new InvalidBudgetAmountException("Enter a valid amount !!!!");
+        if (setBudgetRequest.getAmount() > expensesTrackerApp.get().getBalance())
             throw new InvalidBudgetAmountException("Account Balance is too low for budget amount!!!!");
     }
 
     @Override
     public double getBudgetBalance(String mail) {
         double totalExpenses = 0;
+        Budget budget = findARecentBudget(mail);
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(mail);
         if (expensesTrackerApp.isPresent()) {
-            Budget budget = findARecentBudget(mail);
             for (Expense expense : expenseService.getAllExpenseBelongingTo(expensesTrackerApp.get().getId())) {
-                if (expense.isBudgetActive()) {
+                if (expense.getDateAdded().isBefore(budget.getEndDate()) && expense.isBudgetActive()) {
                     totalExpenses += expense.getAmount();
                 }
 
@@ -70,16 +70,18 @@ public class BudgetServiceImpl implements BudgetService {
             budget.setBudgetBalance(budget.getBudgetBalance() - totalExpenses);
             return budget.getBudgetBalance();
         }
-        return 0;
+        return budget.getBudgetBalance();
     }
 
     @Override
     public Budget findARecentBudget(String mail) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(mail);
         if (expensesTrackerApp.isPresent()) {
-            return lastElementOfUserBudget(findAllBudgetBelongingTo(mail));
+            Budget budget = lastElementOfUserBudget(findAllBudgetBelongingTo(mail));
+            return budget;
+
         }
-        return null;
+        throw new InvalidDetailsException("Enter a valid details");
     }
 
     @Override
@@ -94,10 +96,60 @@ public class BudgetServiceImpl implements BudgetService {
         return listOfBudget;
     }
 
-    private static Budget lastElementOfUserBudget(List<Budget> listOfBudget) {
-        return listOfBudget.get(listOfBudget.size() - 1);
+    @Override
+    public Budget endBudget(String mail) {
+        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(mail);
+        if (expensesTrackerApp.isPresent()) {
+            expensesTrackerApp.get().setActiveBudget(false);
+            expensesTrackerAppRepository.save(expensesTrackerApp.get());
+            Budget budget = findARecentBudget(mail);
+            if (budget != null) {
+                budget.setActive(false);
+                budgetRepository.save(budget);
+                return budget;
+            }
+            throw new NoExisingBudgetExistingException("No existing budget found");
+        }
+        throw new InvalidDetailsException("Invalid details!!!!! TRY AGAIN");
+
+    }
+
+    @Override
+    public Budget resetBudget(ResetBudgetRequest resetBudgetRequest) {
+        Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(resetBudgetRequest.getEmail());
+        if (expensesTrackerApp.isPresent()) {
+            Budget budget = findARecentBudget(resetBudgetRequest.getEmail());
+            budget.setBudgetBalance(getBudgetBalance(resetBudgetRequest.getEmail()) + resetBudgetRequest.getNewAmount());
+            System.out.println(budget.getBudgetBalance());
+            budget.setEndDate(LocalDate.of(resetBudgetRequest.getNewEndYear(), resetBudgetRequest.getNewEndMonth(), resetBudgetRequest.getNewEndDate()));
+            budgetRepository.save(budget);
+            return budget;
+        }
+        throw new InvalidDetailsException("Enter a valid details !!!");
+    }
+
+    private Budget lastElementOfUserBudget(List<Budget> listOfBudget) {
+        if (!listOfBudget.isEmpty()) {
+            Budget budget = listOfBudget.getLast();
+            if (budget.isActive()) {
+                return budget;
+            }
+        }
+        return null;
+    }
+
+
+    private boolean validateLastBudgetStatus(String mail, Budget newBudget) {
+        Budget budget = findARecentBudget(mail);
+        if (budget != null) {
+            if (budget.isActive() || newBudget.getStartDate().isBefore(budget.getEndDate())) {
+                throw new BudgetCanNotBeEnableException("Budget cant be enable because of existing budget (end exising budget or reset budget )");
+            }
+        }
+        return false;
     }
 }
+
 
 
 

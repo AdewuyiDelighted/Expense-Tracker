@@ -76,6 +76,7 @@ class BudgetServiceImplTest {
         assertEquals(1, expensesTrackerAppRepository.count());
         assertNotNull(budgetService.setBudget(setBudgetRequest));
         assertEquals(1, budgetRepository.count());
+        assertFalse(budgetService.endBudget("delightedEmily@gmail.com").isActive());
     }
 
     @Test
@@ -175,6 +176,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
+        budgetService.endBudget("delightedebby@gmail.com");
         SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
         setBudgetRequest1.setEmail("delightedebby@gmail.com");
         setBudgetRequest1.setAmount(2500);
@@ -187,6 +189,7 @@ class BudgetServiceImplTest {
         budgetService.setBudget(setBudgetRequest1);
         assertEquals(2500, budgetService.findARecentBudget("delightedebby@gmail.com").getBudgetAmount());
         assertEquals(LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth()), budgetService.findARecentBudget("delightedebby@gmail.com").getStartDate());
+        assertFalse(budgetService.endBudget("delightedebby@gmail.com").isActive());
     }
 
     @Test
@@ -221,6 +224,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
+        budgetService.endBudget("delightedebby@gmail.com");
         SetBudgetRequest setBudgetRequest1 = new SetBudgetRequest();
         setBudgetRequest1.setEmail("delightedebby@gmail.com");
         setBudgetRequest1.setAmount(3000);
@@ -231,6 +235,7 @@ class BudgetServiceImplTest {
         setBudgetRequest1.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest1.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest1);
+        budgetService.endBudget("delightedebby@gmail.com");
         SetBudgetRequest setBudgetRequest2 = new SetBudgetRequest();
         setBudgetRequest2.setEmail("delightedebby@gmail.com");
         setBudgetRequest2.setAmount(3000);
@@ -242,6 +247,7 @@ class BudgetServiceImplTest {
         setBudgetRequest2.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest2);
         assertEquals(3, budgetService.findAllBudgetBelongingTo("delightedebby@gmail.com").size());
+        assertFalse(budgetService.endBudget("delightedebby@gmail.com").isActive());
     }
 
     @Test
@@ -286,6 +292,8 @@ class BudgetServiceImplTest {
         addExpenseRequest2.setEmail("delightedebby@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest2);
         assertEquals(2000, budgetService.getBudgetBalance("delightedebby@gmail.com"));
+        assertFalse(budgetService.endBudget("delightedebby@gmail.com").isActive());
+
     }
 
     @Test
@@ -314,6 +322,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         assertThrows(InvalidBudgetAmountException.class, () -> budgetService.setBudget(setBudgetRequest));
+
     }
 
     @Test
@@ -341,6 +350,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
         AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
         addExpenseRequest1.setExpenseCategoryName("Ope food");
         addExpenseRequest1.setAmount(3000);
@@ -356,6 +366,86 @@ class BudgetServiceImplTest {
         addExpenseRequest3.setAmount(3500);
         addExpenseRequest3.setEmail("delightedUs@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest3);
+        assertEquals(-3500,budgetService.getBudgetBalance("delightedUs@gmail.com"));
         assertEquals(-1500, expenseTrackerAppService.getBalance("delightedUs@gmail.com"));
     }
+
+    @Test
+    public void testThatUserCanRegisterLoginAndWhenUserSetBudgetAndTheyCanEndBudget(){
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(10000);
+        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setAmount(8000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
+        AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
+        addExpenseRequest1.setExpenseCategoryName("Ope food");
+        addExpenseRequest1.setAmount(3000);
+        addExpenseRequest1.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest1);
+        assertFalse(budgetService.endBudget("delightedUs@gmail.com").isActive());
+
+    }
+    @Test
+    public void testThatUserCanRegisterLoginAndWhenUserSetBudgetAndTheyCanResetBudget(){
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(10000);
+        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setAmount(5000);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
+        AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
+        addExpenseRequest1.setExpenseCategoryName("Ope food");
+        addExpenseRequest1.setAmount(4000);
+        addExpenseRequest1.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest1);
+        assertEquals(1000,budgetService.getBudgetBalance("delightedUs@gmail.com"));
+        ResetBudgetRequest resetBudgetRequest = new ResetBudgetRequest();
+        resetBudgetRequest.setEmail("delightedUs@gmail.com");
+        resetBudgetRequest.setNewAmount(1000);
+        resetBudgetRequest.setNewEndDate(LocalDate.now().getDayOfMonth()+3);
+        resetBudgetRequest.setNewEndMonth(LocalDate.now().getMonthValue());
+        resetBudgetRequest.setNewEndYear(LocalDate.now().getYear());
+        assertEquals(2000,budgetService.resetBudget(resetBudgetRequest).getBudgetBalance());
+        assertFalse(budgetService.endBudget("delightedUs@gmail.com").isActive());
+
+    }
+
+
 }
