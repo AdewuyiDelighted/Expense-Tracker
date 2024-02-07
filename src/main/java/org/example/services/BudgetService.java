@@ -16,8 +16,9 @@ public interface BudgetService {
 
     List<Budget> findAllBudgetBelongingTo(String email);
 
-
     Budget endBudget(String mail);
 
     Budget resetBudget(ResetBudgetRequest resetBudgetRequest);
+
+    void checkEndingDate();
 }

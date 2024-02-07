@@ -446,6 +446,52 @@ class BudgetServiceImplTest {
         assertFalse(budgetService.endBudget("delightedUs@gmail.com").isActive());
 
     }
+    @Test
+    public void testThatUserCanRegisterLoginAndWhenUserSetBudgetAndWouldGetNegativeBalanceAfterIfExpenseIsMoreTest() {
+        expensesTrackerAppRepository.deleteAll();
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.register(registerRequest);
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setPassword("JesusDebby@21");
+        expenseTrackerAppService.login(loginRequest);
+        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+        addIncomeRequest.setAmount(1000);
+        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setIncomeCategoryName("Salary");
+        expenseTrackerAppService.addIncome(addIncomeRequest);
+        AddExpenseRequest addExpenseRequest3 = new AddExpenseRequest();
+        addExpenseRequest3.setExpenseCategoryName("Ope food");
+        addExpenseRequest3.setAmount(100);
+        addExpenseRequest3.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest3);
+        SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
+        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setAmount(500);
+        setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setStartYear(LocalDate.now().getYear());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
+        setBudgetRequest.setEndYear(LocalDate.now().getYear());
+        budgetService.setBudget(setBudgetRequest);
+        AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
+        addExpenseRequest1.setExpenseCategoryName("Ope food");
+        addExpenseRequest1.setAmount(100);
+        addExpenseRequest1.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest1);
+        AddExpenseRequest addExpenseRequest2 = new AddExpenseRequest();
+        addExpenseRequest2.setExpenseCategoryName("Ope food");
+        addExpenseRequest2.setAmount(50);
+        addExpenseRequest2.setEmail("delightedUs@gmail.com");
+        expenseTrackerAppService.addExpenses(addExpenseRequest2);
+        assertEquals(350,budgetService.getBudgetBalance("delightedUs@gmail.com"));
+        assertEquals(750, expenseTrackerAppService.getBalance("delightedUs@gmail.com"));
+    }
+
+
 
 
 }

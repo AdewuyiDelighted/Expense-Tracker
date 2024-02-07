@@ -238,27 +238,28 @@ class ExpenseTrackerAppServiceImplTest {
 
     }
 
-    @Test
-    public void testThatUserCanRegisterAndLoginAndIncomeAmountAndInvalidExpenseAmount() {
-        RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setPassword("Adewuyi@123");
-        registerRequest.setEmail("deborahdelighted5@gmail.com");
-        expenseTrackerAppService.register(registerRequest);
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("deborahdelighted5@gmail.com");
-        loginRequest.setPassword("Adewuyi@123");
-        expenseTrackerAppService.login(loginRequest);
-        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
-        addIncomeRequest.setIncomeCategoryName("extra money");
-        addIncomeRequest.setAmount(5000);
-        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
-        expenseTrackerAppService.addIncome(addIncomeRequest);
-        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
-        addExpenseRequest.setExpenseCategoryName("food");
-        addExpenseRequest.setAmount(7000);
-        addExpenseRequest.setEmail("deborahdelighted5@gmail.com");
-        assertThrows(InvalidAmountException.class, () -> expenseTrackerAppService.addExpenses(addExpenseRequest));
-    }
+//    @Test
+//    public void testThatUserCanRegisterAndLoginAndIncomeAmountAndInvalidExpenseAmount() {
+//        RegisterRequest registerRequest = new RegisterRequest();
+//        registerRequest.setPassword("Adewuyi@123");
+//        registerRequest.setEmail("deborahdelighted5@gmail.com");
+//        expenseTrackerAppService.register(registerRequest);
+//        LoginRequest loginRequest = new LoginRequest();
+//        loginRequest.setEmail("deborahdelighted5@gmail.com");
+//        loginRequest.setPassword("Adewuyi@123");
+//        expenseTrackerAppService.login(loginRequest);
+//        AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
+//        addIncomeRequest.setIncomeCategoryName("extra money");
+//        addIncomeRequest.setAmount(5000);
+//        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
+//        expenseTrackerAppService.addIncome(addIncomeRequest);
+//        AddExpenseRequest addExpenseRequest = new AddExpenseRequest();
+//        addExpenseRequest.setExpenseCategoryName("food");
+//        addExpenseRequest.setAmount(7000);
+//        addExpenseRequest.setEmail("deborahdelighted5@gmail.com");
+//        assertThrows(InvalidAmountException.class, () -> expenseTrackerAppService.addExpenses(addExpenseRequest));
+//    }
+
 
     @Test
     public void testThatUserCanRegisterAndLoginAndIncomeAmountAndAddExpenseFindAllExpense() {

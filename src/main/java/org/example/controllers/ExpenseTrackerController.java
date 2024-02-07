@@ -74,7 +74,7 @@ public class ExpenseTrackerController {
         CheckBalanceResponse checkBalanceResponse = new CheckBalanceResponse();
         try{
             expenseTrackerAppService.getBalance(email);
-            checkBalanceResponse.setBalance("Your balance is "+expenseTrackerAppService.getBalance(email));
+            checkBalanceResponse.setMessage("Your balance is #"+expenseTrackerAppService.getBalance(email));
             return new ResponseEntity<>(new ApiResponse(checkBalanceResponse,true),HttpStatus.ACCEPTED);
         }catch (ExpensesTrackerException ex) {
             checkBalanceResponse.setMessage(ex.getMessage());

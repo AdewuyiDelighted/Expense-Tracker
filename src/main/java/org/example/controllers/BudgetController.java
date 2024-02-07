@@ -33,11 +33,11 @@ public class BudgetController {
     public ResponseEntity<?> getBudgetBalance(@RequestParam(name = "email") String email) {
         GetBudgetBalanceResponse getBudgetBalanceResponse = new GetBudgetBalanceResponse();
         try {
-            budgetService.getBudgetBalance(email);
-            getBudgetBalanceResponse.setData("The balance of your running budget is  #" + budgetService.getBudgetBalance(email));
+            double value = budgetService.getBudgetBalance(email);
+            getBudgetBalanceResponse.setMessage("The balance of your running budget is  #" + value);
             return new ResponseEntity<>(new ApiResponse(getBudgetBalanceResponse, true), HttpStatus.FOUND);
         } catch (ExpensesTrackerException ex) {
-            getBudgetBalanceResponse.setData(ex.getMessage());
+            getBudgetBalanceResponse.setMessage(ex.getMessage());
             return new ResponseEntity<>(new ApiResponse(getBudgetBalanceResponse, false), HttpStatus.FORBIDDEN);
         }
     }

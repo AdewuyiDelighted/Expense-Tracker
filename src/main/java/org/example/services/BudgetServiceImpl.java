@@ -10,6 +10,8 @@ import org.example.dto.request.ResetBudgetRequest;
 import org.example.dto.request.SetBudgetRequest;
 import org.example.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 
@@ -22,15 +24,16 @@ import static org.example.utils.Mapper.map;
 
 
 @Service
+@EnableScheduling
 public class BudgetServiceImpl implements BudgetService {
-    @Autowired
-    private ExpenseTrackerAppService expenseTrackerAppService;
     @Autowired
     private ExpensesTrackerAppRepository expensesTrackerAppRepository;
     @Autowired
     private BudgetRepository budgetRepository;
     @Autowired
     private ExpenseService expenseService;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Budget setBudget(SetBudgetRequest setBudgetRequest) {
@@ -42,6 +45,11 @@ public class BudgetServiceImpl implements BudgetService {
                 expensesTrackerApp.get().setActiveBudget(true);
                 expensesTrackerAppRepository.save(expensesTrackerApp.get());
                 budgetRepository.save(budget);
+                emailService.emailSender(setBudgetRequest.getEmail(), """
+                        Welcome Note""", """
+                        Dear User,
+                        You have successfully set a budget for a particular duration of time
+                        Here is your detail regard your new budget""" + budget);
                 return budget;
             }
         }
@@ -70,7 +78,7 @@ public class BudgetServiceImpl implements BudgetService {
             budget.setBudgetBalance(budget.getBudgetBalance() - totalExpenses);
             return budget.getBudgetBalance();
         }
-        return budget.getBudgetBalance();
+        throw new InvalidDetailsException("Details Invalid");
     }
 
     @Override
@@ -127,6 +135,25 @@ public class BudgetServiceImpl implements BudgetService {
         }
         throw new InvalidDetailsException("Enter a valid details !!!");
     }
+
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * *")
+    public void checkEndingDate() {
+        for (Budget budget : budgetRepository.findAll()) {
+            if (budget.getEndDate().isEqual(LocalDate.now())) {
+                budget.setActive(false);
+                budgetRepository.save(budget);
+                Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(budget.getExpenseAppTrackerId());
+                emailService.emailSender(expensesTrackerApp.get().getEmail(), """
+                        Budget DueTime Reminder""", """
+                        This mail is to remind you that your current budget
+                        budget period has come to and end""" + budget);
+
+            }
+        }
+    }
+
 
     private Budget lastElementOfUserBudget(List<Budget> listOfBudget) {
         if (!listOfBudget.isEmpty()) {

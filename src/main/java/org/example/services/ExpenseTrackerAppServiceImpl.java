@@ -67,14 +67,14 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     public void addIncome(AddIncomeRequest addIncomeRequest) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(addIncomeRequest.getEmail());
         if (expensesTrackerApp.isPresent()) {
-
             ExpensesTrackerApp withoutOptionalExpenseTracker = expensesTrackerApp.get();
             Income income = incomeService.addIncome(addIncomeRequest.getIncomeCategoryName(), addIncomeRequest.getAmount(), withoutOptionalExpenseTracker.getId());
             withoutOptionalExpenseTracker.getUserIncome().add(income);
             withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() + withoutOptionalExpenseTracker.getUserIncome().getLast().getAmount());
             expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
+        } else {
+            throw new InvalidDetailsException("Invalid detail");
         }
-
     }
 
 
@@ -87,6 +87,8 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
             withoutOptionalExpenseTracker.getUserExpense().add(expense);
             withoutOptionalExpenseTracker.setBalance(withoutOptionalExpenseTracker.getBalance() - expense.getAmount());
             expensesTrackerAppRepository.save(withoutOptionalExpenseTracker);
+        } else {
+            throw new InvalidDetailsException("Invalid detail");
         }
     }
 
@@ -112,7 +114,10 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
     @Override
     public double getBalance(String email) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(email);
+        if(expensesTrackerApp.isPresent()){
         return expensesTrackerApp.get().getBalance();
+        }
+        throw new InvalidDetailsException("Invalid details");
     }
 
 
