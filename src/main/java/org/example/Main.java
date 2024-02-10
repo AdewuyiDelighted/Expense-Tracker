@@ -25,9 +25,9 @@ public class Main {
 //    public static void readCode(){
 //        System.out.println("My fixedRate schedule "+ LocalTime.now());
 //    }
-//    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "* * * * * *")
 //    public static void readCodeCron(){
-//        System.out.println("My fixedRate schedule "+ LocalTime.now());
+//        System.out.println(" corny schedule "+ LocalTime.now());
 //    }
 
 

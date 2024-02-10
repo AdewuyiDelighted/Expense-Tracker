@@ -24,7 +24,6 @@ import static org.example.utils.Mapper.map;
 
 
 @Service
-@EnableScheduling
 public class BudgetServiceImpl implements BudgetService {
     @Autowired
     private ExpensesTrackerAppRepository expensesTrackerAppRepository;
@@ -85,8 +84,8 @@ public class BudgetServiceImpl implements BudgetService {
     public Budget findARecentBudget(String mail) {
         Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findByEmail(mail);
         if (expensesTrackerApp.isPresent()) {
-            Budget budget = lastElementOfUserBudget(findAllBudgetBelongingTo(mail));
-            return budget;
+            return lastElementOfUserBudget(findAllBudgetBelongingTo(mail));
+
 
         }
         throw new InvalidDetailsException("Enter a valid details");
@@ -128,7 +127,6 @@ public class BudgetServiceImpl implements BudgetService {
         if (expensesTrackerApp.isPresent()) {
             Budget budget = findARecentBudget(resetBudgetRequest.getEmail());
             budget.setBudgetBalance(getBudgetBalance(resetBudgetRequest.getEmail()) + resetBudgetRequest.getNewAmount());
-            System.out.println(budget.getBudgetBalance());
             budget.setEndDate(LocalDate.of(resetBudgetRequest.getNewEndYear(), resetBudgetRequest.getNewEndMonth(), resetBudgetRequest.getNewEndDate()));
             budgetRepository.save(budget);
             return budget;
@@ -138,7 +136,7 @@ public class BudgetServiceImpl implements BudgetService {
 
 
     @Override
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 5 0 * * *")
     public void checkEndingDate() {
         for (Budget budget : budgetRepository.findAll()) {
             if (budget.getEndDate().isEqual(LocalDate.now())) {
@@ -147,8 +145,8 @@ public class BudgetServiceImpl implements BudgetService {
                 Optional<ExpensesTrackerApp> expensesTrackerApp = expensesTrackerAppRepository.findById(budget.getExpenseAppTrackerId());
                 emailService.emailSender(expensesTrackerApp.get().getEmail(), """
                         Budget DueTime Reminder""", """
-                        This mail is to remind you that your current budget
-                        budget period has come to and end""" + budget);
+                        This is a reminder to get you notify on the due date of your budget
+                        """ + budget);
 
             }
         }
@@ -175,6 +173,8 @@ public class BudgetServiceImpl implements BudgetService {
         }
         return false;
     }
+
+//    private ExpensesTrackerApp findAnAccount(Dtring )
 }
 
 

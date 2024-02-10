@@ -277,7 +277,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth()+1);
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
@@ -408,42 +408,42 @@ class BudgetServiceImplTest {
     public void testThatUserCanRegisterLoginAndWhenUserSetBudgetAndTheyCanResetBudget(){
         expensesTrackerAppRepository.deleteAll();
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setEmail("delightedUs@gmail.com");
+        registerRequest.setEmail("deborahdelighted5@gmail.com");
         registerRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.register(registerRequest);
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("delightedUs@gmail.com");
+        loginRequest.setEmail("deborahdelighted5@gmail.com");
         loginRequest.setPassword("JesusDebby@21");
         expenseTrackerAppService.login(loginRequest);
         AddIncomeRequest addIncomeRequest = new AddIncomeRequest();
         addIncomeRequest.setAmount(10000);
-        addIncomeRequest.setEmail("delightedUs@gmail.com");
+        addIncomeRequest.setEmail("deborahdelighted5@gmail.com");
         addIncomeRequest.setIncomeCategoryName("Salary");
         expenseTrackerAppService.addIncome(addIncomeRequest);
         SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
-        setBudgetRequest.setEmail("delightedUs@gmail.com");
+        setBudgetRequest.setEmail("deborahdelighted5@gmail.com");
         setBudgetRequest.setAmount(5000);
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndDate(11);
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
         AddExpenseRequest addExpenseRequest1 = new AddExpenseRequest();
         addExpenseRequest1.setExpenseCategoryName("Ope food");
         addExpenseRequest1.setAmount(4000);
-        addExpenseRequest1.setEmail("delightedUs@gmail.com");
+        addExpenseRequest1.setEmail("deborahdelighted5@gmail.com");
         expenseTrackerAppService.addExpenses(addExpenseRequest1);
-        assertEquals(1000,budgetService.getBudgetBalance("delightedUs@gmail.com"));
+        assertEquals(1000,budgetService.getBudgetBalance("deborahdelighted5@gmail.com"));
         ResetBudgetRequest resetBudgetRequest = new ResetBudgetRequest();
-        resetBudgetRequest.setEmail("delightedUs@gmail.com");
+        resetBudgetRequest.setEmail("deborahdelighted5@gmail.com");
         resetBudgetRequest.setNewAmount(1000);
         resetBudgetRequest.setNewEndDate(LocalDate.now().getDayOfMonth()+3);
         resetBudgetRequest.setNewEndMonth(LocalDate.now().getMonthValue());
         resetBudgetRequest.setNewEndYear(LocalDate.now().getYear());
         assertEquals(2000,budgetService.resetBudget(resetBudgetRequest).getBudgetBalance());
-        assertFalse(budgetService.endBudget("delightedUs@gmail.com").isActive());
+        assertFalse(budgetService.endBudget("deborahdelighted5@gmail.com").isActive());
 
     }
     @Test
@@ -473,7 +473,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
