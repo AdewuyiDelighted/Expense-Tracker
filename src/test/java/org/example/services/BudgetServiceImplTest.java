@@ -70,7 +70,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         assertEquals(1, expensesTrackerAppRepository.count());
@@ -103,7 +103,7 @@ class BudgetServiceImplTest {
         SetBudgetRequest setBudgetRequest = new SetBudgetRequest();
         setBudgetRequest.setEmail("delightedEmily@gmail.com");
         setBudgetRequest.setAmount(2000);
-        setBudgetRequest.setStartDate(31);
+        setBudgetRequest.setStartDate(32);
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
         setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth() + 1);
@@ -426,7 +426,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(11);
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth()+1);
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
@@ -473,7 +473,7 @@ class BudgetServiceImplTest {
         setBudgetRequest.setStartDate(LocalDate.now().getDayOfMonth());
         setBudgetRequest.setStartMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setStartYear(LocalDate.now().getYear());
-        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth());
+        setBudgetRequest.setEndDate(LocalDate.now().getDayOfMonth()+1);
         setBudgetRequest.setEndMonth(LocalDate.now().getMonthValue());
         setBudgetRequest.setEndYear(LocalDate.now().getYear());
         budgetService.setBudget(setBudgetRequest);
