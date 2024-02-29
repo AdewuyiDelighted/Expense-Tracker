@@ -32,6 +32,8 @@ public interface ExpenseTrackerAppService {
 
     List<Income> findAllIncomeBelongingTo(String mail);
 
+    List<Object> findHistory(String email);
+
 
 
 }

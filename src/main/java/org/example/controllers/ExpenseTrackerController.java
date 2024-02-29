@@ -81,5 +81,17 @@ public class ExpenseTrackerController {
             return new ResponseEntity<>(new ApiResponse(checkBalanceResponse, false), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/history")
+    public ResponseEntity<?> viewAllTransaction(@RequestParam(name = "email") String email){
+        ViewAllTransactionResponse viewAllTransactionResponse = new ViewAllTransactionResponse();
+        try{
+            viewAllTransactionResponse.setHistories(expenseTrackerAppService.findHistory(email));
+            return new ResponseEntity<>(new ApiResponse(viewAllTransactionResponse,true),HttpStatus.ACCEPTED);
+        }catch (ExpensesTrackerException ex) {
+            viewAllTransactionResponse.setHistories(ex.getMessage());
+            return new ResponseEntity<>(new ApiResponse(viewAllTransactionResponse, false), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }

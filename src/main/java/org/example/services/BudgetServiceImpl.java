@@ -61,7 +61,7 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = findARecentBudget(mail);
         ExpensesTrackerApp expensesTrackerApp = findAccount(mail);
         for (Expense expense : expenseService.getAllExpenseBelongingTo(expensesTrackerApp.getId())) {
-            if (expense.getDateAdded().isBefore(budget.getEndDate()) && expense.isBudgetActive()) {
+            if (expense.getDateAdded().isBefore(budget.getEndDate()) && expense.isBudgetIsActive()) {
                 totalExpenses += expense.getAmount();
             }
         }

@@ -2,13 +2,8 @@ package org.example.data.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-
 @Data
 @Entity
 public class Income {

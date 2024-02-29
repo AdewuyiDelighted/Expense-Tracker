@@ -1,7 +1,6 @@
 package org.example.services;
 
-import jakarta.transaction.Transactional;
-import org.example.data.model.Income;
+
 import org.example.data.repository.BudgetRepository;
 import org.example.data.repository.ExpenseRepository;
 import org.example.data.repository.ExpensesTrackerAppRepository;

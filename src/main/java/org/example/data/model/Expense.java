@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 @Data
@@ -20,6 +19,6 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "expenses_tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
-    private boolean budgetActive = false;
+    private boolean budgetIsActive = false;
 
 }
