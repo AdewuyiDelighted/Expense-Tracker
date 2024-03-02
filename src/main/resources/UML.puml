@@ -10,7 +10,7 @@ interface ExpenseTracker{
 
    +register(String,String);
    +login(String,String);
-   +addIncome(AddIncomeRequest addIncomeRequest);
+   +addIncome(String,double,String);
    +getBalance(String email);
    +addExpenses(String,double,String);
    +List<Expense> findAllExpenseBelongingTo(String email);
@@ -36,10 +36,11 @@ interface Expense{
     -dateAdded:LocalDate
     -amount:double
     -category:Category
+    -budgetIsActive:boolean
     -expensesTrackerApp:ExpensesTrackerApp
 
-    +addIncome(String,double,String):void
-    +getAllIncomeBelongingTo(Long expenseTrackerId):List<Income>
+    +addExpenses(String,double,String):void
+    +getAllExpenseBelongingTo(Long expenseTrackerId):List<Income>
         ExpensesTrackerApp - -> Income :uses
     }
 Expense--> ExpenseTracker:uses

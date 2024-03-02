@@ -1,0 +1,54 @@
+@startuml
+
+entity ExpenseTracker{
+   - email:String
+   -password:String
+   -balance:String
+   -List<Income> userIncome:Income
+   -List<Expense> userExpense:Expense
+   -activeBudget:boolean
+   -isLocked
+
+}
+entity Expense{
+    -id:long
+    -dateAdded:LocalDate
+    -amount:double
+    -category:Category
+    -expensesTrackerApp:ExpensesTrackerApp
+
+}
+"ExpenseTracker" *-- "Expense":one-to-many
+entity Income{
+    -id:long
+    -dateAdded:LocalDate
+    -amount:double
+    -category:Category
+    -expensesTrackerApp:ExpensesTrackerApp
+
+}
+"ExpenseTracker" *-- "Income":one-to-many
+entity Budget{
+      -id:long
+     -budgetBalance:double
+     -budgetAmount:double
+     -startDate: LocalDate
+     -endDate: LocalDate
+     -expenseAppTrackerId:Long
+     -isActive:boolean
+}
+"ExpenseTracker" *-- "Budget":one-to-many
+entity CategoryType{
+INCOME
+EXPENSE
+}
+entity Category{
+   -id:long
+   -name:String
+   -expensesTrackerId:long
+   -categoryType:CategoryType
+
+}
+"Category" o-- "CategoryType":many-to-many
+"Budget" *--"Category":one-to-many
+@enduml
