@@ -1,0 +1,73 @@
+@startuml
+interface ExpenseTracker{
+   - email:String
+   -password:String
+   -balance:String
+   -List<Income> userIncome:Income
+   -List<Expense> userExpense:Expense
+   -activeBudget:boolean
+   -isLocked
+
+   +register(String,String);
+   +login(String,String);
+   +addIncome(AddIncomeRequest addIncomeRequest);
+   +getBalance(String email);
+   +addExpenses(String,double,String);
+   +List<Expense> findAllExpenseBelongingTo(String email);
+   +List<Income> findAllIncomeBelongingTo(String mail);
+   +List<Object> findHistory(String email);
+
+}
+interface Income{
+    -id:long
+    -dateAdded:LocalDate
+    -amount:double
+    -category:Category
+    -expensesTrackerApp:ExpensesTrackerApp
+
+    +addIncome(String,double,String):void
+    +getAllIncomeBelongingTo(Long expenseTrackerId):List<Income>
+
+    }
+Income--> ExpenseTracker:uses
+
+interface Expense{
+    -id:long
+    -dateAdded:LocalDate
+    -amount:double
+    -category:Category
+    -expensesTrackerApp:ExpensesTrackerApp
+
+    +addIncome(String,double,String):void
+    +getAllIncomeBelongingTo(Long expenseTrackerId):List<Income>
+        ExpensesTrackerApp - -> Income :uses
+    }
+Expense--> ExpenseTracker:uses
+
+interface Budget{
+     -id:long
+     -budgetBalance:double
+     -budgetAmount:double
+     -startDate: LocalDate
+     -endDate: LocalDate
+     -expenseAppTrackerId:Long
+     -isActive:boolean
+}
+Budget-->ExpenseTracker :uses
+Enum CategoryType{
+INCOME
+EXPENSE
+}
+Category --> CategoryType:uses
+
+Class Category{
+   -id:long
+   -name:String
+   -expensesTrackerId:long
+   -categoryType:CategoryType
+
+  +Category addCategory(String , Long expenseTrackerId, CategoryType):Category
+}
+Budget --> Category:uses
+
+@enduml

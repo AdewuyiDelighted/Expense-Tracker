@@ -99,7 +99,6 @@ public class ExpenseTrackerAppServiceImpl implements ExpenseTrackerAppService {
         ArrayList<Object> userHistory = new ArrayList<>();
         userHistory.addAll(findAllIncomeBelongingTo(email));
         userHistory.addAll(findAllExpenseBelongingTo(email));
-
         return userHistory;
     }
 
