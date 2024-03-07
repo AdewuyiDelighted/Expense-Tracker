@@ -192,6 +192,203 @@ body {
 "successful": false
 }`
 
+## **POST setBudgetRequestResponse**
+This is special feature of the application that enable the user to be able to enter duration of time they would like set a particular budget,
+the amount that should't be exceeded
+it returns "Budget set up Successfully"
+Required field are:
+* Email
+* Amount
+* StartDate
+* StartMonth
+* StartYear
+* EndDate
+* EndMonth
+* EndYear
+
+Method:POST
+Header: Content-Type:application/json
+
+### **Response 1**
+`status code 200 ok
+body {
+{
+"data": {
+"data": "Budget set up Successfully"
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Invalid details"
+},
+"successful": false
+}`
+### **Response 3**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Invalid date"
+},
+"successful": false
+}`
+### **Response 4**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Budget cant be enable because of existing budget (end exising budget or reset budget )"
+},
+"successful": false
+}`
+
+## **GET checkBudgetBalance**
+This endpoint return the balance of the budget that user set,
+and it only availiable during the set duration,it takes user email
+it returns accurate budget balance
+Required field
+* userEmail
+
+Method:GET
+Header: Content-Type:application/json
+### **Response 1**
+`status code 200 ok
+body {
+{
+"data": {
+"message": "The balance of your running budget is  #3000.0"
+},
+"successful": true 
+}`
+### **Response 2**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Invalid details"
+},
+"successful": false
+}`
+
+## **GET findRecentBudget**
+This endpoint returns the most recent and running budget that the user set,it takes email
+it returns the full detail of the recent budget
+
+Required field
+* userEmail
+
+Method:GET
+Header: Content-Type:application/json
+
+### **Response 1**
+`status code 200 ok
+body {
+{
+"data": {
+"id": 1,
+"budgetBalance": 3000,
+"budgetAmount": 3000,
+"startDate": "2024-03-01",
+"endDate": "2024-03-03",
+"expenseAppTrackerId": 1,
+"active": true
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "No Existing budget running"
+},
+"successful": false
+}`
+
+## **POST endABudget**
+This endpoint enable the user to end a recent and running budget,
+it takes the user email and it returns "Budget Ended Successfully"
+Required field
+* userEmail
+
+Method:POST
+Header: Content-Type:application/json
+
+### **Response 1**
+`status code 200 ok
+body {
+{
+"data": {
+"data": "Budget Ended Successfully"
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "No Existing budget running"
+},
+"successful": false
+}`
+
+## **GET findAllBudgets**
+This endpoint enable the user to able to view all bugdet that have been created
+
+it return list of user budget
+
+Required field
+* userEmail
+
+Method:POST
+Header: Content-Type:application/json
+### **Response 1**
+`status code 200 ok
+body {
+"data": [
+{
+"id": 1,
+"budgetBalance": 3000,
+"budgetAmount": 3000,
+"startDate": "2024-03-01",
+"endDate": "2024-03-03",
+"expenseAppTrackerId": 1,
+"active": false
+}
+]
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 Bad request
+body {
+"message": "No Existing budget running"
+}
+"successful": true
+}`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
