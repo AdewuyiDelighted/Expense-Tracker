@@ -192,7 +192,7 @@ body {
 "successful": false
 }`
 
-## **POST setBudgetRequestResponse**
+## **POST setBudgetRequest**
 This is special feature of the application that enable the user to be able to enter duration of time they would like set a particular budget,
 the amount that should't be exceeded
 it returns "Budget set up Successfully"
