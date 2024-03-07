@@ -27,3 +27,112 @@ It also send reminder when the enddate of set budget had due
 * Ensure your project is on the right server.port
 * Open your Post man Application,paste the accurate url on the given url space
 
+### **ENDPOINT**
+
+### **POST REGISTER REQUEST**
+This endpoint is the first step a for time user to enable them to add their information,
+in order to make it store the the database
+Required field are:
+* Username
+* Email
+Method:POST
+Content-Type:application/json
+
+### **Response 1**
+`status code 202 created
+body
+{
+"data": {
+"message": "Registration successful"
+},
+"successful": true
+}`
+
+### **Response 2**
+`status code 400 BadRequest
+body
+{
+"data": {
+"message": "Password too weak"
+},
+"successful": false
+}`
+
+### **POST LOGIN REQUEST**
+This is an endpoint that enable the user to have access to the application features,
+in order to use the core funtionaility of the application
+This endpoint required the user to be enter correct information that was enter when they register
+
+Required field are:
+* Username
+* Email
+Method:POST
+Content-Type:application/json
+
+### **Response 1**
+`status code 202 created
+body
+{
+{
+"data": {
+"message": "Login successful"
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 BadRequest
+body
+{
+"data": {
+"message": "Invalid details"
+},
+"successful": false
+}`
+
+## **POST addIncome**
+This endpoint is used to add income to the users account in the application,
+In order for them to able to engage in some transactions
+
+Required field are:
+* Username
+* Email
+
+Method:POST
+Content-Type:application/json
+### **Response 1**
+`status code 200 ok
+body {
+"data": {
+"message": "Income added successfully"
+},
+"successful": true
+}`
+### **Response 2**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Invalid amount"
+},
+"successful": false
+}`
+### **Response 3**
+`status code 400 Bad Request
+body {
+"data": {
+"message": "Invalid details"
+},
+"successful": false
+}`
+
+
+
+
+
+
+
+
+
+
+
+
+
