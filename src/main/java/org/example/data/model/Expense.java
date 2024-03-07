@@ -19,6 +19,9 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "expenses_tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
+    @ManyToOne
+    @JoinColumn(name = "expenses_tracker_app_id")
+    private FindHistory findHistory;
     private boolean budgetIsActive = false;
 
 }

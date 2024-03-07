@@ -17,5 +17,8 @@ public class Income {
     @ManyToOne
     @JoinColumn(name = "expenses_Tracker_app_id")
     private ExpensesTrackerApp expensesTrackerApp;
+    @ManyToOne
+    @JoinColumn(name = "expenses_Tracker_app_id")
+    private FindHistory findHistory;
 
 }
