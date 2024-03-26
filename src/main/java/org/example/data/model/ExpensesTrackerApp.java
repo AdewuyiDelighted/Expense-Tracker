@@ -22,5 +22,5 @@ public class ExpensesTrackerApp {
     @OneToMany(mappedBy = "expensesTrackerApp",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Expense> userExpense = new ArrayList<>();
     private boolean activeBudget = false;
-    private boolean isLocked;
+    private boolean isLocked = true;
 }
