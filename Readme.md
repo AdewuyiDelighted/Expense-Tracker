@@ -1,11 +1,21 @@
 # **ExpensesTracker**
 
+
+## Table of content
+[Introduction](#Introduction)
+* [Pre-requisites](#Pre-requisites)
+* [Features](#features)
+* [HOW TO INSTALL PROGRAM](#how-to-install-program)
+* [ENDPOINT](#endpoint)
+
+
+## Introduction
+
 This Expense Tracker is a straightforward financial app that uses MySQL for reliable data storage and JUnit for testing accuracy. 
 It helps users easily record and categorize expenses, providing a simple solution for effective expense tracking.
 It also send reminder when the enddate of set budget had due
 
-## Table of content
-[Pre-requisites](#Pre-requisites)
+
 
 ### Pre-requisites
 * JDK 21
@@ -24,7 +34,7 @@ It also send reminder when the enddate of set budget had due
 * End A budget
 * findAllBudget
 
-### **HOW TO INSTALL PROGRAM**
+###  **HOW TO INSTALL PROGRAM**
 
 * Install git
 * Click on this link https://github.com/AdewuyiDelighted/Expense-Tracker
