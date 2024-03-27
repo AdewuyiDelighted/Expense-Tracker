@@ -2,12 +2,12 @@
 
 
 ## Table of content
-[Introduction](#Introduction)
+* [Introduction](#Introduction)
 * [Pre-requisites](#Pre-requisites)
 * [Features](#features)
 * [HOW TO INSTALL PROGRAM](#how-to-install-program)
 * [ENDPOINT](#endpoint)
-
+* 
 
 ## Introduction
 
